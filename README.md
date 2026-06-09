@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" alt="Flutter" />
   <img src="https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" alt="Dart" />
   <img src="https://img.shields.io/badge/UI-Dark%20Mode-212121?style=for-the-badge" alt="Dark Mode UI" />
-  <img src="https://img.shields.io/badge/License-GNU%20GPLv3-blue.svg?style=for-the-badge" alt="License: GPL v3" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT" />
 </p>
 
 ---
@@ -20,7 +20,6 @@
 - [🛠 Tech Stack](#-tech-stack)
 - [📂 Folder Structure](#-folder-structure)
 - [🚀 Getting Started](#-getting-started)
-- [🤝 Contributing](#-contributing)
 - [📝 License](#-license)
 - [📬 Contact](#-contact)
 
@@ -29,13 +28,11 @@
 ## 📱 App Preview
 
 <p align="center">
-  <img src="https://placehold.co/250x550/1a1a2e/ffffff?text=Dashboard+Screenshot" width="23%" alt="Dashboard Overview" />
-  &nbsp;&nbsp;
-  <img src="https://placehold.co/250x550/1a1a2e/ffffff?text=Analytics+Screenshot" width="23%" alt="Analytics View" />
-  &nbsp;&nbsp;
-  <img src="https://placehold.co/250x550/1a1a2e/ffffff?text=Add+Expense+Screenshot" width="23%" alt="Add Transaction" />
-  &nbsp;&nbsp;
-  <img src="https://placehold.co/250x550/1a1a2e/ffffff?text=History+Screenshot" width="23%" alt="Transaction History" />
+  <img src="https://github.com/user-attachments/assets/67313385-b28f-429f-98ca-ba3ff5fa3c37" width="150" alt="Dashboard" />
+  <img src="https://github.com/user-attachments/assets/a0adb7dc-4967-42f2-b8f3-1bedf477cb77" width="150" alt="Analytics" />
+  <img src="https://github.com/user-attachments/assets/edd0d9be-0089-48af-bf6e-a627b33b87a5" width="150" alt="Transaction History" />
+  <img src="https://github.com/user-attachments/assets/e318da72-c949-4480-8e2c-862d78be1bbc" width="150" alt="New Transaction" />
+  <img src="https://github.com/user-attachments/assets/22b526bb-b3f4-4a38-b20b-e62a8520e1b9" width="150" alt="Savings Goal" />
 </p>
 
 ---
@@ -164,18 +161,12 @@ flutter run
 ```
 
 ---
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 13 PM" src="https://github.com/user-attachments/assets/edd0d9be-0089-48af-bf6e-a627b33b87a5" />
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 13 PM (2)" src="https://github.com/user-attachments/assets/e318da72-c949-4480-8e2c-862d78be1bbc" />
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 13 PM (1)" src="https://github.com/user-attachments/assets/22b526bb-b3f4-4a38-b20b-e62a8520e1b9" />
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 12 PM" src="https://github.com/user-attachments/assets/67313385-b28f-429f-98ca-ba3ff5fa3c37" />
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 12 PM (1)" src="https://github.com/user-attachments/assets/a0adb7dc-4967-42f2-b8f3-1bedf477cb77" />
-<img width="702" height="1600" alt="WhatsApp Image 2026-05-26 at 4 19 12 PM" src="https://github.com/user-attachments/assets/c575676d-d04a-4ecf-ac97-6072bfb8a75c" />
 
-## 📝 License
+## License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+This project is licensed under the MIT License.
 
-See the `LICENSE` file for more information.
+See the LICENSE file for details.
 
 ---
 
@@ -184,7 +175,7 @@ See the `LICENSE` file for more information.
 ### Vinit
 
 - GitHub: @VINIT0207
-- LinkedIn: Add your LinkedIn profile here
+- Email: sharma.vinit.2007@gmail.com
 
 ---
 
