@@ -159,10 +159,19 @@ flutter pub get
 ```bash
 flutter run
 ```
-
+> [!NOTE]
+> This repository contains only the essential source files required to understand and run the project.
+>
+> Auto-generated Flutter files, build artifacts, IDE-specific files, and other non-essential files have been omitted to keep the repository clean and lightweight.
+>
+> If you clone this repository, Flutter will automatically regenerate the required files after running:
+>
+> ```bash
+> flutter pub get
+> ```
 ---
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License.
 
