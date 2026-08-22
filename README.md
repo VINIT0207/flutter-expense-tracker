@@ -249,9 +249,9 @@ FinPlus is engineered with a lightweight, multi-threaded architecture. Resource 
 | **🔴 Unsupported for AI** | 32-bit CPU devices (`armeabi-v7a`), < 3 GB total RAM, Android < 8.0 | **< 3 GB** | ❌ Sluggish | ❌ **Unsupported** (Native 64-bit `llama.cpp` requires ARM64-v8a architecture). |
 
 ### 💡 Low-RAM Optimization & Real-World Benchmarks:
-- **Engine Memory Tuning**: The native engine uses a lean context size (`n_ctx = 2048`) and bounded token generation (`maxTokens = 384`), slashing native KV cache memory by over **85%** to prevent Android Low Memory Killer (OOM) crashes on low-RAM devices.
-- **Budget Devices (e.g. Snapdragon 4 Gen 2 with ~1.2 GB Free RAM)**: Handles financial advisory prompts smoothly when background apps are closed.
-- **Model Recommendation**: On devices with ≤ 4 GB total RAM (~1.2 GB available), use lightweight **0.5B – 1.1B models** (`Q4_K_M` or `Q4_0`) for optimal performance and battery longevity.
+- **16K Context Stress Test**: In real-world testing on a budget Snapdragon 4 Gen 2 phone with just **~1.2 GB available RAM**, the native GGUF engine was powerful enough to sustain **2 full conversation turns** even under a massive 16,384-token context allocation before reaching OS memory limits.
+- **Tuned 2K Mobile Context**: By optimizing the context window to `n_ctx = 2048` and `maxTokens = 384`, memory usage is reduced by over **85%**, allowing budget devices to run **indefinite, continuous multi-turn conversations** smoothly with zero memory pressure.
+- **Model Recommendation**: On devices with ≤ 4 GB total RAM (~1.2 GB available), lightweight **0.5B – 1.5B models** (`Q4_K_M` or `Q4_0`) provide the best balance of speed, responsiveness, and battery life.
 
 ---
 
