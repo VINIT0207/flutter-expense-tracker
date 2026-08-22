@@ -202,7 +202,9 @@ Java_com_theorangeshade_onenm_1local_1llm_OneNmNative_loadModel(
 
     LOGI("Creating context...");
     llama_context_params ctx_params = llama_context_default_params();
-    ctx_params.n_ctx = 16384;
+    ctx_params.n_ctx = 2048; // Optimized context size for mobile devices to prevent Low Memory Killer (OOM) crashes
+    ctx_params.n_threads = 4;
+    ctx_params.n_threads_batch = 4;
     ctx = llama_init_from_model(model, ctx_params);
 
     env->ReleaseStringUTFChars(modelPath, path);

@@ -64,7 +64,7 @@ class LocalAiService {
         temperature: 0.4,
         topK: 40,
         topP: 0.9,
-        maxTokens: 2048, // Much larger max tokens since we have 16k context
+        maxTokens: 384, // Optimized token length to prevent memory spikes
         repeatPenalty: 1.15,
       );
 
