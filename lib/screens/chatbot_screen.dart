@@ -212,24 +212,31 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               child: const Icon(Icons.auto_awesome, color: kPrimaryColor, size: 18),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "AI Financial Advisor",
-                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                Text(
-                  _isEngineReady ? "Active • On-Device AI" : "Initializing...",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: _isEngineReady
-                        ? const Color(0xFF34D399)
-                        : const Color(0xFFFBBF24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "AI Financial Advisor",
+                    style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  Text(
+                    _isEngineReady ? "Active • On-Device AI" : "Initializing...",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: _isEngineReady
+                          ? const Color(0xFF34D399)
+                          : const Color(0xFFFBBF24),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -259,8 +266,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
   Widget _buildQuickPromptsBar() {
     return Container(
-      height: 42,
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      height: 52,
+      margin: const EdgeInsets.symmetric(vertical: 2),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -269,6 +276,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         itemBuilder: (context, index) {
           final prompt = _quickPrompts[index];
           return ActionChip(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             label: Text(
               prompt,
               style: const TextStyle(fontSize: 12, color: Color(0xFFE2E8F0), fontWeight: FontWeight.w600),
@@ -342,45 +352,61 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   Widget _buildTextComposer() {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     return Container(
       decoration: const BoxDecoration(
         color: kSurfaceColor,
         border: Border(top: BorderSide(color: Color(0xFF334155), width: 1.2)),
       ),
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom + 8,
+        bottom: bottomInset > 0 ? 8.0 : MediaQuery.of(context).padding.bottom + 8.0,
         top: 8,
-        left: 16,
-        right: 8,
+        left: 12,
+        right: 6,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _textController,
-              onSubmitted: _handleSubmitted,
-              style: const TextStyle(color: Colors.white),
-              textInputAction: TextInputAction.send,
-              decoration: const InputDecoration(
-                hintText: "Ask about budget, spending, tips...",
-                hintStyle: TextStyle(color: Color(0xFF94A3B8)),
-                border: InputBorder.none,
-                filled: false,
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: const Color(0xFF334155), width: 1.0),
+                ),
+                child: TextField(
+                  controller: _textController,
+                  onSubmitted: _handleSubmitted,
+                  style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                  textInputAction: TextInputAction.send,
+                  decoration: const InputDecoration(
+                    hintText: "Ask about budget, spending, tips...",
+                    hintStyle: TextStyle(color: Color(0xFF94A3B8), fontSize: 12.5),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  ),
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            decoration: const BoxDecoration(
-              color: Color(0xFF6366F1),
-              shape: BoxShape.circle,
+            const SizedBox(width: 6),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF6366F1),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
+                onPressed: () => _handleSubmitted(_textController.text),
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                padding: EdgeInsets.zero,
+              ),
             ),
-            child: IconButton(
-              icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
-              onPressed: () => _handleSubmitted(_textController.text),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
