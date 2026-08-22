@@ -7,9 +7,10 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
-        android:label="Expense Tracker"
+        android:label="FinPlus"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         
         <!-- Notification channel configuration (for older Android versions) -->
         <meta-data

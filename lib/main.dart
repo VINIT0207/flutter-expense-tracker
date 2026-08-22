@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 // --- LOGIC IMPORTS ---
-import 'logic/finance_provider.dart';
+import 'data/finance_repository.dart';
+import 'viewmodels/main_viewmodel.dart';
+import 'utils/notification_service.dart';
 
 // --- SCREEN IMPORTS ---
 import 'screens/home_screen.dart';
@@ -13,6 +15,7 @@ import 'screens/add_entry_screen.dart';
 import 'screens/advanced_dashboard.dart';
 import 'screens/history_screen.dart';
 import 'screens/add_goal_screen.dart';
+import 'screens/chatbot_screen.dart';
 
 // --- GLOBAL KEYS ---
 // These allow us to control the app from anywhere (e.g., show a snackbar from logic)
@@ -24,6 +27,15 @@ void main() {
   // Catches errors that happen outside the widget tree (like asynchronous crashes)
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    try {
+      await NotificationService().init();
+      await NotificationService().requestPermissions();
+      await NotificationService().scheduleDailyReminder();
+      await NotificationService().scheduleHourlyReminder();
+    } catch (e) {
+      debugPrint("Failed to initialize notifications: $e");
+    }
 
     // 2. UX Optimization: Lock Orientation
     // Finance apps are best viewed in Portrait mode on phones
@@ -58,8 +70,14 @@ class FinanceProApp extends StatelessWidget {
     // Using MultiProvider allows you to easily add Auth or Settings providers later
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => FinanceProvider()..loadData(),
+        Provider<FinanceRepository>(
+          create: (_) => FinanceRepository(),
+        ),
+        ChangeNotifierProxyProvider<FinanceRepository, MainViewModel>(
+          create: (context) => MainViewModel(
+            Provider.of<FinanceRepository>(context, listen: false)
+          )..loadData(),
+          update: (context, repo, previous) => previous ?? MainViewModel(repo)..loadData(),
         ),
       ],
       child: MaterialApp(
@@ -94,12 +112,12 @@ class FinanceProApp extends StatelessWidget {
   // --- THEME DEFINITIONS ---
 
   ThemeData _buildDarkTheme() {
-    // "Slate & Indigo" Cyberpunk Palette
-    const primaryColor = Color(0xFF6366F1); // Indigo 500
-    const secondaryColor = Color(0xFF10B981); // Emerald 500
-    const backgroundColor = Color(0xFF0F172A); // Slate 900
-    const surfaceColor = Color(0xFF1E293B); // Slate 800
-    const errorColor = Color(0xFFEF4444); // Red 500
+    // High-Contrast Pro Cyberpunk Palette
+    const primaryColor = Color(0xFF818CF8); // Indigo 400 (High luminance)
+    const secondaryColor = Color(0xFF34D399); // Emerald 400 (High luminance)
+    const backgroundColor = Color(0xFF080C14); // Deep Midnight Black
+    const surfaceColor = Color(0xFF151D2C); // High-Contrast Slate Surface
+    const errorColor = Color(0xFFF43F5E); // Rose 500 (Vivid alert)
 
     final baseTheme = ThemeData.dark(useMaterial3: true);
 
@@ -116,7 +134,7 @@ class FinanceProApp extends StatelessWidget {
         onPrimary: Colors.white,
       ),
 
-      // Professional Typography
+      // High-Contrast Professional Typography
       textTheme: GoogleFonts.interTextTheme(baseTheme.textTheme).copyWith(
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
@@ -126,10 +144,12 @@ class FinanceProApp extends StatelessWidget {
         ),
         headlineMedium: GoogleFonts.inter(
           fontSize: 24,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
-        bodyLarge: GoogleFonts.inter(fontSize: 16, color: Colors.white70),
+        bodyLarge: GoogleFonts.inter(fontSize: 16, color: const Color(0xFFE2E8F0), fontWeight: FontWeight.w500),
+        bodyMedium: GoogleFonts.inter(fontSize: 14, color: const Color(0xFFCBD5E1)),
+        bodySmall: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF94A3B8)),
       ),
 
       // Component Styling
@@ -141,7 +161,7 @@ class FinanceProApp extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: TextStyle(
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
           color: Colors.white,
           letterSpacing: 0.5,
         ),
@@ -152,26 +172,26 @@ class FinanceProApp extends StatelessWidget {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20), // Modern rounded corners
-          side: BorderSide(color: Colors.white.withAlpha(13), width: 1), // Subtle border
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0xFF334155), width: 1.2), // High-contrast border
         ),
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: const Color(0xFF6366F1),
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 2,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 0.5),
         ),
       ),
 
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: primaryColor,
+        backgroundColor: const Color(0xFF6366F1),
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
 
@@ -181,23 +201,24 @@ class FinanceProApp extends StatelessWidget {
         contentPadding: const EdgeInsets.all(20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: Color(0xFF334155), width: 1.2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withAlpha(13)),
+          borderSide: const BorderSide(color: Color(0xFF334155), width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
-        labelStyle: TextStyle(color: Colors.white.withAlpha(128)),
-        prefixIconColor: Colors.white.withAlpha(128),
+        labelStyle: const TextStyle(color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+        hintStyle: const TextStyle(color: Color(0xFF64748B)),
+        prefixIconColor: primaryColor,
       ),
 
-      dividerTheme: DividerThemeData(
-        color: Colors.white.withAlpha(26),
-        thickness: 1,
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF334155),
+        thickness: 1.2,
       ),
     );
   }
@@ -222,13 +243,20 @@ class RouteGenerator {
       case '/home':
         return _createRoute(const HomeScreen());
       case '/add':
+      case '/add_entry':
         return _createRoute(const AddEntryScreen());
       case '/advanced':
+      case '/dashboard':
+      case '/analytics':
         return _createRoute(const AdvancedDashboard());
       case '/history':
         return _createRoute(const HistoryScreen());
       case '/add-goal':
+      case '/add_goal':
+      case '/goals':
         return _createRoute(const AddGoalScreen());
+      case '/chat':
+        return _createRoute(const ChatbotScreen());
       default:
         return _errorRoute();
     }
