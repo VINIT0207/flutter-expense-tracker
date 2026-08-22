@@ -32,7 +32,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
 
-  late final SlmController _slmController;
+  SlmController? _slmController;
+  bool _hasStartedInit = false;
   bool _isInitializing = false;
   bool _isEngineReady = false;
   bool _isThinking = false;
@@ -60,7 +61,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_isInitializing) {
+    // Ensure AI initializes exactly ONCE and is not destroyed when keyboard opens
+    if (!_hasStartedInit) {
+      _hasStartedInit = true;
       _isInitializing = true;
       final repo = Provider.of<FinanceRepository>(context, listen: false);
       _slmController = SlmController(LocalAiService(), repo);
@@ -71,8 +74,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Future<void> _initializeAI() async {
     final modelPath = await ModelSetupService.prepareModelFile();
 
-    if (modelPath != null) {
-      final success = await _slmController.aiService.initialize(modelPath);
+    if (modelPath != null && _slmController != null) {
+      final success = await _slmController!.aiService.initialize(modelPath);
       if (mounted) {
         setState(() {
           _isEngineReady = success;
@@ -92,19 +95,21 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   void dispose() {
     _textController.dispose();
     _scrollController.dispose();
-    _slmController.aiService.dispose();
+    _slmController?.aiService.dispose();
     super.dispose();
   }
 
   void _handleSubmitted(String text) {
-    if (text.trim().isEmpty || _isThinking) return;
+    if (text.trim().isEmpty || _isThinking || _slmController == null) return;
 
+    final controller = _slmController!;
+    final promptText = text.trim();
     _textController.clear();
 
     setState(() {
       _messages.add(
         ChatMessage(
-          text: text,
+          text: promptText,
           isUser: true,
           timestamp: DateTime.now(),
         ),
@@ -120,7 +125,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     Future.microtask(() async {
       try {
         final response =
-            await _slmController.processUserMessage(text, monthlyBudget);
+            await controller.processUserMessage(promptText, monthlyBudget);
 
         if (!mounted) return;
         setState(() {
@@ -128,6 +133,20 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           _messages.add(
             ChatMessage(
               text: response.reply,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+        });
+        _scrollToBottom();
+      } catch (e) {
+        debugPrint("AI Chat Processing Error: $e");
+        if (!mounted) return;
+        setState(() {
+          _isThinking = false;
+          _messages.add(
+            ChatMessage(
+              text: "I encountered a brief processing hiccup. Please ask me again! 💡",
               isUser: false,
               timestamp: DateTime.now(),
             ),

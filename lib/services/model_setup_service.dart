@@ -15,22 +15,23 @@ class ModelSetupService {
       final modelPath = '${directory.path}/$fileName';
       final file = File(modelPath);
 
-      final byteData = await rootBundle.load(assetPath);
-      final assetLength = byteData.lengthInBytes;
-
-      // If file exists and size matches asset, reuse it
+      // FAST PATH: If file already exists and is valid on disk, reuse immediately with ZERO memory footprint
       if (await file.exists()) {
         final existingLength = await file.length();
-        if (existingLength == assetLength) {
+        if (existingLength > 10 * 1024 * 1024) { // > 10 MB indicates extracted model
+          debugPrint("✅ Model file ready in sandbox: $modelPath (${(existingLength / (1024 * 1024)).toStringAsFixed(1)} MB)");
           return modelPath;
         }
-        debugPrint("Model updated. Overwriting existing model with new fine-tuned asset...");
+        // If file exists but is corrupted (0 bytes or partial), remove it
         await file.delete();
       }
 
-      // Read asset bytes
-      debugPrint("Reading new model asset into memory...");
+      debugPrint("Reading model asset into memory for first-time extraction...");
       if (onProgress != null) onProgress(0.1);
+      final byteData = await rootBundle.load(assetPath);
+      final assetLength = byteData.lengthInBytes;
+
+      // Read asset bytes
       final rawBytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
 
       // Offload file writing to a background isolate to prevent UI stutters
