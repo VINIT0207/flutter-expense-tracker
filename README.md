@@ -89,9 +89,40 @@
 - **Category Grid**: Visual category selector with dedicated color tokens and icons.
 - **Essential vs. Discretionary Toggle**: Classify transactions with a single tap for accurate budgeting.
 
-### 8. 📄 Data Portability (CSV Import & Export)
-- **Export to CSV**: Export your complete financial history to standard CSV format for external analysis or backup.
-- **Import CSV**: Seamlessly restore or bulk-import transactions with automatic duplicate handling and error validation.
+### 8. 📄 Data Portability (CSV Import & Export Guide)
+FinPlus allows you to export your financial records for backup and bulk-import existing transactions from spreadsheets or CSV files.
+
+#### Where to Find Import & Export in the App:
+- Navigate to the **Analytics Dashboard** (tap the bar chart icon from the home screen).
+- **Importing CSV**: Tap the **Upload File icon** (`Icons.upload_file`) on the top-right corner of the elevated Analytics AppBar. Pick any `.csv` file from your device storage to immediately import and refresh your charts.
+- **Exporting CSV**: Tap the floating action button **"EXPORT CSV"** at the bottom of the screen to save your full SQLite database as a formatted `.csv` file.
+
+#### CSV Schema & Column Specifications:
+To create your own CSV file for importing, use the following column headers in the first row:
+
+| Column Name | Requirement | Type | Allowed Values & Format | Description | Example |
+|---|---|---|---|---|---|
+| `title` | **Required** | String | Any text | Name of item, merchant, or service | `Swiggy Food Delivery` |
+| `category` | **Required** | String | `Food`, `Transport`, `Shopping`, `Bills`, `Entertainment`, `Health`, `Education`, `Investment`, `Salary`, `Other` | Spending category | `Food` |
+| `amount` | **Required** | Number | Positive decimal (`> 0`) | Amount spent in INR | `450.00` |
+| `date` | **Required** | Date | `YYYY-MM-DD` or `YYYY/MM/DD` | Date when expense occurred | `2026-08-20` |
+| `isEssential` | *Optional* | Boolean | `true`/`false`, `1`/`0`, `yes`/`no` | Needs vs. Wants classification (Defaults to `false`) | `false` |
+| `note` | *Optional* | String | Any text | Additional notes or tags | `Dinner with team` |
+| `id` | *Optional* | Integer | Number or blank | Database record ID (leave empty for new imports) | `1` |
+
+#### Sample CSV File Template:
+You can also use the included [`sample_expenses.csv`](file:///c:/Projects/Expense_Tracker/sample_expenses.csv) file located in the root project folder as a reference:
+
+```csv
+title,category,amount,date,isEssential,note
+Swiggy Food Delivery,Food,450.00,2026-08-20,false,Dinner with friends
+Supermarket Groceries,Food,1850.00,2026-08-19,true,Weekly groceries and staples
+Uber Cab Ride,Transport,320.00,2026-08-19,false,Office commute
+Netflix Subscription,Entertainment,649.00,2026-08-15,false,Monthly premium plan
+Electricity Bill,Bills,1420.00,2026-08-14,true,Monthly utility payment
+Gym Membership Fee,Health,1500.00,2026-08-05,true,Monthly gym pass
+Pharmacy & Vitamins,Health,650.00,2026-08-12,true,Monthly medicines
+```
 
 ### 9. 🤖 Offline On-Device AI Financial Advisor
 - **100% Offline & Private**: Powered by local Small Language Model (SLM) inference using GGUF architecture. Zero financial data is sent to external cloud servers.
