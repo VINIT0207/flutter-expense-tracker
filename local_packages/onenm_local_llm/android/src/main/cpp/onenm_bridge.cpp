@@ -202,7 +202,15 @@ Java_com_theorangeshade_onenm_1local_1llm_OneNmNative_loadModel(
 
     LOGI("Creating context...");
     llama_context_params ctx_params = llama_context_default_params();
-    ctx_params.n_ctx = 2048; // Optimized context size for mobile devices to prevent Low Memory Killer (OOM) crashes
+    
+    // High context window default (16k context for long multi-turn chats)
+    ctx_params.n_ctx = 16384;
+    
+    // NOTE FOR LOW-END / LOW-RAM DEVICES (<= 4GB RAM / ~1.2GB free RAM):
+    // If deploying on memory-constrained devices (e.g., Snapdragon 4 Gen 2 with low available RAM),
+    // you can adjust n_ctx to 2048 or 1024 to slash KV-cache memory by ~85% and prevent OS OOM kills:
+    // ctx_params.n_ctx = 2048;
+
     ctx_params.n_threads = 4;
     ctx_params.n_threads_batch = 4;
     ctx = llama_init_from_model(model, ctx_params);
