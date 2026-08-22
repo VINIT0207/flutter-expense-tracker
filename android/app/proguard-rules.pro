@@ -6,7 +6,12 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
+# flutter_local_notifications keep rules
+-keep class com.dexterous.flutterlocalnotifications.** { *; }
+
 # onenm_local_llm / llama.cpp keep rules
+-keep class com.theorangeshade.onenm_local_llm.** { *; }
+-keep class com.write4me.llama_flutter_android.** { *; }
 -keep class com.onenm.local_llm.** { *; }
 -keepclassmembers class * {
     native <methods>;
