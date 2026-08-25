@@ -224,7 +224,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    _isEngineReady ? "Active • On-Device AI" : "Initializing...",
+                    _isEngineReady
+                        ? "Active • On-Device AI"
+                        : (_isInitializing ? "Initializing Engine..." : "Offline Ready"),
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -356,13 +358,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Container(
       decoration: const BoxDecoration(
         color: kSurfaceColor,
-        border: Border(top: BorderSide(color: Color(0xFF334155), width: 1.2)),
+        border: Border(top: BorderSide(color: Color(0xFF222F43), width: 1.0)),
       ),
       padding: EdgeInsets.only(
         bottom: bottomInset > 0 ? 8.0 : MediaQuery.of(context).padding.bottom + 8.0,
         top: 8,
-        left: 12,
-        right: 6,
+        left: 14,
+        right: 10,
       ),
       child: SafeArea(
         top: false,
@@ -370,38 +372,54 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: const Color(0xFF334155), width: 1.0),
-                ),
-                child: TextField(
-                  controller: _textController,
-                  onSubmitted: _handleSubmitted,
-                  style: const TextStyle(color: Colors.white, fontSize: 13.5),
-                  textInputAction: TextInputAction.send,
-                  decoration: const InputDecoration(
-                    hintText: "Ask about budget, spending, tips...",
-                    hintStyle: TextStyle(color: Color(0xFF94A3B8), fontSize: 12.5),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+              child: TextField(
+                controller: _textController,
+                onSubmitted: _handleSubmitted,
+                style: GoogleFonts.outfit(color: Colors.white, fontSize: 13.5),
+                textInputAction: TextInputAction.send,
+                decoration: InputDecoration(
+                  hintText: "Ask about budget, spending, tips...",
+                  hintStyle: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 13),
+                  isDense: true,
+                  filled: true,
+                  fillColor: const Color(0xFF0B101B),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: const BorderSide(color: Color(0xFF222F43), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: const BorderSide(color: Color(0xFF222F43), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: const BorderSide(color: kPrimaryColor, width: 1.4),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF6366F1),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6366F1), kPrimaryColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF6366F1).withAlpha(100),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: IconButton(
                 icon: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
                 onPressed: () => _handleSubmitted(_textController.text),
-                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                 padding: EdgeInsets.zero,
               ),
             ),

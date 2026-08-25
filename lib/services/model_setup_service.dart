@@ -29,7 +29,6 @@ class ModelSetupService {
       debugPrint("Reading model asset into memory for first-time extraction...");
       if (onProgress != null) onProgress(0.1);
       final byteData = await rootBundle.load(assetPath);
-      final assetLength = byteData.lengthInBytes;
 
       // Read asset bytes
       final rawBytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
